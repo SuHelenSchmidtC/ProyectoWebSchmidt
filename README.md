@@ -1,6 +1,5 @@
 # ProyectoWebSchmidt
 
-clave API :     AIzaSyCedrHqDHfOCXIrKmE6rOojfIupDj-BKYE
 
 
 INSTALACIONES
