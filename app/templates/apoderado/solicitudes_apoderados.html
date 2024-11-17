@@ -1,0 +1,17 @@
+<h1>Solicitudes Enviadas</h1>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Estado</th>
+    </tr>
+    {% for solicitud in solicitudes %}
+    <tr>
+        <td>{{ solicitud.id }}</td>
+        <td>{{ solicitud.estado }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="2">No tienes solicitudes enviadas.</td>
+    </tr>
+    {% endfor %}
+</table>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Viaje</title>
+  <style>
+    /* CSS para centrar el contenido en la página */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      text-align: center;
+      width: 300px;
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    label, select, button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+    }
+    select {
+      padding: 8px;
+    }
+    button {
+      padding: 10px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #map {
+      height: 400px;
+      width: 100%;
+      margin-top: 20px;
+    }
+    /* Estilos para el mensaje de alerta centrado */
+    .alert-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 10px 20px;
+      border: 2px solid green;
+      border-radius: 5px;
+      z-index: 10;
+      opacity: 1;
+      transition: opacity 1s ease-out;
+    }
+    .alert-container.hidden {
+      opacity: 0;
+    }
+    .alert {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Iniciar Viaje</h2>
+
+    <!-- Formulario para seleccionar la ruta -->
+    <form method="POST">
+      {% csrf_token %}
+      <label for="ruta">Selecciona la Ruta:</label>
+      <select name="ruta" id="ruta" required>
+        <option value="" disabled selected>Selecciona una ruta</option>
+        {% for ruta in rutas %}
+          <option value="{{ ruta.id }}">{{ ruta.nombre }} - {{ ruta.destino }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" name="iniciar_viaje">Iniciar Viaje</button>
+      
+    </form>
+
+    <!-- Solo muestra el mapa si el viaje ha sido iniciado -->
+    {% if viaje_iniciado %}
+      <div id="map"></div>
+
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCedrHqDHfOCXIrKmE6rOojfIupDj-BKYE&callback=initMap" async defer></script>
+      <script>
+        function initMap() {
+          var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,
+            center: {lat: -33.8688, lng: 151.2195}
+          });
+
+          var geocoder = new google.maps.Geocoder();
+          {% for direccion in direcciones_alumnos %}
+            geocoder.geocode({'address': '{{ direccion }}'}, function(results, status) {
+              if (status === 'OK') {
+                new google.maps.Marker({
+                  map: map,
+                  position: results[0].geometry.location
+                });
+                if (map.getCenter()) {
+                  map.setCenter(results[0].geometry.location);
+                }
+              } else {
+                console.error('No se pudo geocodificar la dirección: ' + status);
+              }
+            });
+          {% endfor %}
+        }
+
+        // Ocultar el mensaje de alerta después de 3 segundos
+        window.onload = function() {
+          const alertContainer = document.querySelector('.alert-container');
+          setTimeout(() => {
+            alertContainer.classList.add('hidden');
+          }, 3000); // 3 segundos
+        };
+      </script>
+
+      <!-- Contenedor del mensaje de alerta centrado -->
+      <div class="alert-container">
+        <div class="alert">
+          Ruta {{ ruta.nombre }} iniciada, ¡buen viaje!
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

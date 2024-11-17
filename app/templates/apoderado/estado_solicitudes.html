@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado de Solicitudes</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Colores para los estados */
+        .estado-aprobado {
+            color: green;
+        }
+        .estado-pendiente {
+            color: orange;
+        }
+        .estado-rechazado {
+            color: red;
+        }
+
+        /* Efecto hover para filas de la tabla */
+        .table tbody tr:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s;
+            background-color: #f8f9fa; /* Color de fondo al pasar el mouse */
+        }
+    </style>
+</head>
+<body>
+  
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Estado de Solicitudes</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Conductor</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for solicitud in solicitudes %}
+                        <tr>
+                            <td>{{ solicitud.conductor }}</td>
+                            <td class="{% if solicitud.estado == 'aprobado' %}estado-aprobado{% elif solicitud.estado == 'pendiente' %}estado-pendiente{% elif solicitud.estado == 'rechazado' %}estado-rechazado{% endif %}">
+                                {{ solicitud.estado }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Conductores Vinculados</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for conductor in conductores_vinculados %}
+                    <li class="list-group-item">{{ conductor }}</li>
+                    {% empty %}
+                    <li class="list-group-item">No hay conductores vinculados.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

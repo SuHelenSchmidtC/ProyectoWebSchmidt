@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Alumnos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h2, h3 {
+            color: #062e59;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #090909;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .btn {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Gestión de Alumnos</h2>
+        
+        <!-- Formulario para agregar un nuevo alumno -->
+        <h3>Agregar Alumno</h3>
+        <form method="post" action="{% url 'gestion_alumnos' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ agregar_form.as_p }}
+            </div>
+            <button type="submit" name="agregar" class="btn btn-primary">Agregar Alumno</button>
+        </form>
+
+        <!-- Listado de alumnos con opciones para editar y eliminar -->
+        <h3>Listado de Alumnos</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>RUT</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alumno in alumnos %}
+                <tr>
+                    <td>{{ alumno.rut }}</td>
+                    <td>{{ alumno.nombre }}</td>
+                    <td>
+                        <!-- Formulario para editar un alumno -->
+                        <form method="post" action="{% url 'gestion_alumnos' %}" style="display:inline;">
+                            {% csrf_token %}
+                            {{ editar_form.as_p }}
+                            <input type="hidden" name="pk" value="{{ alumno.pk }}">
+                            <button type="submit" name="editar" class="btn btn-warning">Editar</button>
+                        </form>
+
+                        <!-- Formulario para eliminar un alumno -->
+                        <form method="post" action="{% url 'gestion_alumnos' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="pk" value="{{ alumno.pk }}">
+                            <button type="submit" name="eliminar" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

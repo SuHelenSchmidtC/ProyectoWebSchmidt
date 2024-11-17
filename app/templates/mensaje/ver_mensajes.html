@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Conversaciones</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .chat-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff; /* Color azul */
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #e9ecef; /* Color gris claro */
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        li:hover {
+            background-color: #d6d8db; /* Efecto hover con un gris más oscuro */
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .conversation-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #adb5bd; /* Fondo gris oscuro */
+            display: inline-block;
+            margin-right: 10px;
+            text-align: center;
+            line-height: 35px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #6c757d;
+            margin-top: 20px;
+        }
+
+        .btn-new-message {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+            background-color: #007bff; /* Color azul */
+            color: #fff;
+            font-weight: bold;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-decoration: none;
+        }
+
+        .btn-new-message:hover {
+            background-color: #0056b3; /* Azul más oscuro al pasar el mouse */
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>Mis Conversaciones</h2>
+        <ul>
+            {% for conversacion in conversaciones %}
+                <li>
+                    <div>
+                        <div class="conversation-icon">
+                            {% if conversacion.participante_1 == request.user %}
+                                {{ conversacion.participante_2.nombre|first|upper }}
+                            {% else %}
+                                {{ conversacion.participante_1.nombre|first|upper }}
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'ver_conversacion' conversacion.id %}">
+                            Conversación con 
+                            {% if conversacion.participante_1 == request.user %}
+                                {{ conversacion.participante_2.nombre }} {{ conversacion.participante_2.apellido }}
+                            {% else %}
+                                {{ conversacion.participante_1.nombre }} {{ conversacion.participante_1.apellido }}
+                            {% endif %}
+                        </a>
+                    </div>
+                </li>
+            {% empty %}
+                <p class="empty-message">No tienes conversaciones.</p>
+            {% endfor %}
+        </ul>
+
+        <a href="{% url 'enviar_mensaje' %}" class="btn-new-message">Enviar un nuevo mensaje</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

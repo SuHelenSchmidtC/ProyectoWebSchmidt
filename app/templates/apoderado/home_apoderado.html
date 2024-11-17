@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'app/static/css/estilos.css' %}">
+    <title>Home Apoderado</title>
+    <style>
+        body {
+            background-color: #F7F7F7; /* Fondo claro */
+        }
+        .header {
+            background-color: #233D4D; /* Color principal */
+            color: #FCCA46; /* Color de texto */
+            padding: 20px;
+            text-align: center;
+        }
+        .slider-content h3 {
+            color: #FE7F2D; /* Color del texto del slider */
+        }
+        .alumno-detalles {
+            background-color: #A1C181; /* Color de fondo detalles */
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn-custom {
+            background-color: #619B8A; /* Color personalizado para botones */
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #4D7A70; /* Color al pasar el mouse */
+        }
+    </style>
+    <script>
+        function submitForm() {
+            document.getElementById("alumno-form").submit();
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h2 class="title">Mis Hijos</h2>
+        
+        <div class="slider">
+            
+            <form method="POST" action="{% url 'home_apoderado' %}" id="alumno-form" class="alumno-form mb-4">
+                {% csrf_token %}
+                <select name="alumno_id" class="form-control" onchange="submitForm()">
+                    <option value="" disabled {% if not alumno_seleccionado %}selected{% endif %}>Selecciona un alumno</option>
+                    {% if alumno_seleccionado %}
+                        <option value="{{ alumno_seleccionado.id }}" selected>{{ alumno_seleccionado.nombre }} {{ alumno_seleccionado.apellido }}</option>
+                    {% endif %}
+                    {% for alumno in alumnos %}
+                        {% if alumno.id != alumno_seleccionado.id %}
+                            <option value="{{ alumno.id }}">{{ alumno.nombre }} {{ alumno.apellido }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="welcome-text">Bienvenido, Apoderado<td>{{ apoderado.rut }}</td>
+            <td>{{ apoderado.apellido }}</td></div>
+
+        {% if alumno_seleccionado %}
+            <div class="alumno-detalles">
+                <h2>Detalles del Alumno</h2>
+                <p><strong>Nombre:</strong> {{ alumno_seleccionado.nombre }} {{ alumno_seleccionado.apellido }}</p>
+                {% if solicitud %}
+                    <p><strong>Conductor Vinculado:</strong> {{ solicitud.conductor.nombre }} {{ solicitud.conductor.apellido }}</p>
+                    <p><strong>Estado de Solicitud:</strong> {{ solicitud.estado }}</p>
+                {% else %}
+                    <p>No hay conductor vinculado actualmente.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <h3>Alumnos vinculados:</h3>
+        <ul>
+            {% for alumno in alumnos_vinculados %}
+                <li>{{ alumno.nombre }} {{ alumno.apellido }}</li>
+            {% endfor %}
+        </ul>
+        
+        <h3>Rutas:</h3>
+        <ul>
+            {% for ruta in rutas_con_alumnos %}
+                <li>
+                    {{ ruta.ruta.nombre }}
+                    <ul>
+                        {% for alumno in ruta.alumnos %}
+                            <li>{{ alumno.nombre }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+        
+
+        <div class="button-container">
+            <button onclick="location.href='{% url 'gestion_alumnos' %}'" class="btn btn-custom">Gestionar Alumnos</button>
+            <button onclick="location.href='{% url 'listar_conductores' %}'" class="btn btn-custom">Listar Conductores</button>
+        </div>
+<!-- home_apoderado.html y home_conductor.html -->
+<a href="{% url 'ver_mensajes' %}">Ver Mensajes</a>
+<a href="{% url 'enviar_mensaje' %}">Enviar Mensaje</a>
+
+        <div class="mt-4">
+            {% for conductor in conductores_vinculados %}
+                <div class="mb-3">
+                    <h3>{{ conductor.nombre }} {{ conductor.apellido }}</h3>
+                    <a href="{% url 'ver_documentos_conductor' conductor.id %}" class="btn btn-primary">Ver Documentos</a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="button-container">
+            {% if solicitud and solicitud.conductor %}
+                <button onclick="location.href='{% url 'ver_documentos_conductor' solicitud.conductor.id %}'" class="btn btn-custom">Ver Documentos del Conductor</button>
+            {% else %}
+                <p>No hay conductor vinculado actualmente.</p>
+            {% endif %}
+            <!-- home_apoderado.html -->
+<a href="{% url 'ver_rutas_asignadas' %}" class="btn btn-primary">Ver Rutas Asignadas</a>
+
+        </div>
+        
+    </div>
+
+    <div id="logout-btn" class="text-center mt-4">
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-light btn-block">Cerrar sesión</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html> 

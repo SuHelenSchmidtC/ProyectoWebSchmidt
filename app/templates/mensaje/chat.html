@@ -1,0 +1,40 @@
+<!-- chat.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+</head>
+<body>
+    <h2>Chat</h2>
+    <div id="chat-log"></div>
+    <input type="text" id="message-input" autocomplete="off" placeholder="Escribe tu mensaje..."/>
+    <button id="send-message">Enviar</button>
+
+    <script>
+        const chatId = "{{ chat_id }}";
+        const userId = "{{ user_id }}";
+        const chatSocket = new WebSocket(
+            'ws://' + window.location.host + '/ws/chat/' + chatId + '/'
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            document.querySelector('#chat-log').innerHTML += (
+                '<div>' + data.remitente + ': ' + data.message + ' (' + data.fecha + ')</div>'
+            );
+        };
+
+        document.querySelector('#send-message').onclick = function(e) {
+            const messageInput = document.querySelector('#message-input');
+            const message = messageInput.value;
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'remitente_id': userId,
+                'destinatario_id': chatId
+            }));
+            messageInput.value = '';
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<h3>Lista de Vehículos</h3>
+<ul class="list-group">
+    {% for vehiculo in vehiculos %}
+        <li class="list-group-item">
+            <strong>{{ vehiculo.marca }} {{ vehiculo.modelo }}</strong> - Patente: {{ vehiculo.patente }}
+            <a href="{% url 'gestionar_vehiculos_edit' vehiculo.id %}" class="btn btn-warning btn-sm">Editar</a>  <!-- Cambiar a gestionar_vehiculos_edit -->
+            <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="eliminar" value="{{ vehiculo.id }}">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este vehículo?');">Eliminar</button>
+            </form>
+        </li>
+    {% empty %}
+        <li class="list-group-item">No hay vehículos registrados.</li>
+    {% endfor %}
+</ul>

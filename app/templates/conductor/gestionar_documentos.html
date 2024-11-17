@@ -1,0 +1,183 @@
+{% block content %}
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .document-container {
+            display: flex;
+            justify-content: space-between; /* Espacio entre las secciones */
+            margin-bottom: 20px;
+        }
+
+        .document-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            flex: 1; /* Ajusta el tamaño de cada sección */
+            margin-right: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .document-section:last-child {
+            margin-right: 0; /* Elimina el margen derecho en el último elemento */
+        }
+
+        .document-item {
+            display: flex;
+            align-items: center; /* Centra verticalmente el contenido */
+            justify-content: space-between; /* Espacio entre los elementos */
+            margin-bottom: 10px; /* Espacio entre cada documento */
+            background-color: #f8f9fa; /* Color de fondo para los documentos */
+            padding: 10px; /* Espacio interno */
+            border-radius: 5px; /* Bordes redondeados */
+        }
+
+        .document-actions {
+            display: flex;
+            align-items: center; /* Centra verticalmente los botones */
+        }
+
+        .btn-icon {
+            display: flex;
+            align-items: center; /* Centra verticalmente el icono */
+            padding: 5px; /* Espacio alrededor del icono */
+            margin-left: 10px; /* Espacio entre los iconos */
+            color: white; /* Color del texto de los botones */
+            border: none; /* Sin borde */
+            border-radius: 5px; /* Bordes redondeados */
+            transition: background-color 0.3s; /* Efecto al pasar el ratón */
+        }
+
+        .btn-view {
+            background-color: #007bff; /* Color de fondo para ver documento */
+        }
+
+        .btn-view:hover {
+            background-color: #0056b3; /* Color al pasar el ratón */
+        }
+
+        .btn-delete {
+            background-color: #dc3545; /* Color de fondo para eliminar */
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333; /* Color al pasar el ratón */
+        }
+
+        .welcome-text {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .document-title {
+            font-weight: bold;
+            margin-right: 10px; /* Espacio entre el título y los documentos */
+        }
+    </style>
+</head>
+
+<div class="header">
+    <h2 class="welcome-text">Gestionar Documentos</h2>
+</div>
+
+{% if mensaje %}
+    <div class="alert alert-success" role="alert">
+        {{ mensaje }}
+    </div>
+{% endif %}
+
+<div class="document-container">
+    <!-- Rectángulo para Documentos Personales -->
+    <div class="document-section personal-documents">
+        <h2>Mis datos</h2>
+        <p><strong>Nombre:</strong> {{ user.nombre }}</p>
+        <p><strong>Apellido:</strong> {{ user.apellido }}</p>
+        <p><strong>RUT:</strong> {{ user.rut }}</p>
+        <div class="document-item">
+            <span class="document-title">Licencia:</span>
+            <div class="document-actions">
+                {% if documentos_personales.licencia %}
+                    <a href="{{ documentos_personales.licencia.url }}" target="_blank" class="btn-icon btn-view">
+                        <i class="fas fa-eye"></i> <!-- Icono de ojo -->
+                    </a>
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="documento_id" value="{{ documentos_personales.id }}">
+                        <button type="submit" name="eliminar_documento_licencia" class="btn-icon btn-delete">
+                            <i class="fas fa-trash"></i> <!-- Icono de basura -->
+                        </button>
+                    </form>
+                {% else %}
+                    No tienes licencia subida.
+                {% endif %}
+            </div>
+        </div>
+        <div class="document-item">
+            <span class="document-title">Certificado:</span>
+            <div class="document-actions">
+                {% if documentos_personales.certificado %}
+                    <a href="{{ documentos_personales.certificado.url }}" target="_blank" class="btn-icon btn-view">
+                        <i class="fas fa-eye"></i> <!-- Icono de ojo -->
+                    </a>
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="documento_id" value="{{ documentos_personales.id }}">
+                        <button type="submit" name="eliminar_documento_certificado" class="btn-icon btn-delete">
+                            <i class="fas fa-trash"></i> <!-- Icono de basura -->
+                        </button>
+                    </form>
+                {% else %}
+                    No tienes certificado subido.
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Rectángulo para Documentos del Vehículo -->
+    <div class="document-section vehicle-documents">
+        <h2>Documentos del Vehículo</h2>
+        <ul>
+            {% if vehiculo %}
+                <li>
+                    <i class="fas fa-car"></i>
+                    <strong>Marca:</strong> {{ vehiculo.marca }}
+                </li>
+                <li>
+                    <i class="fas fa-car"></i>
+                    <strong>Modelo:</strong> {{ vehiculo.modelo }}
+                </li>
+                <li>
+                    <i class="fas fa-calendar-alt"></i>
+                    <strong>Año:</strong> {{ vehiculo.anio }}
+                </li>
+                <li>
+                    <i class="fas fa-tag"></i>
+                    <strong>Patente:</strong> {{ vehiculo.patente }}
+                </li>
+                {% for documento in documentos_vehiculo %}
+                    <li>
+                        <i class="fas fa-file-alt"></i>
+                        <strong>{{ documento.tipo_documento|capfirst }}:</strong>
+                        <a href="{{ documento.archivo.url }}" target="_blank" class="btn btn-primary btn-icon">
+                            <i class="fas fa-eye"></i> <!-- Icono de ojo -->
+                        </a>
+                        <form method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="documento_id" value="{{ documento.id }}">
+                            <button type="submit" name="eliminar_documento_vehiculo" class="btn btn-danger btn-icon">
+                                <i class="fas fa-trash"></i> <!-- Icono de basura -->
+                            </button>
+                        </form>
+                        <a href="{% url 'editar_documento' documento.id %}" class="btn btn-warning btn-icon">Editar</a>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li><i class="fas fa-exclamation-circle"></i>No tienes datos de vehículo registrados.</li>
+            {% endif %}
+        </ul>
+    </div>
+    <a href="{% url 'gestionar_vehiculos' %}" class="btn btn-primary">Gestionar Vehículos</a>
+
+</div>
+
+{% endblock %}

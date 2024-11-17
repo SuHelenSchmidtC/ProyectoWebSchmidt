@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>  
+    <meta charset="UTF-8">
+    <title>Historial de Viajes</title>
+    <style>
+        /* Estilos generales */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f8f8;
+        }
+
+        .container {
+            width: 50%;
+            padding: 20px;
+            background-color: white;
+            border: 2px solid black;
+            border-radius: 25px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label, input, button {
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid black;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        p {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Historial de Viajes</h1>
+
+        <!-- Formulario para filtrar por fecha -->
+        <form method="get" action="">
+            <label for="fecha">Filtrar por fecha:</label>
+            <input type="date" name="fecha" id="fecha" />
+            <button type="submit">Filtrar</button>
+        </form>
+
+        <!-- Mostrar la tabla solo si hay historial -->
+        {% if historial %}
+            <table>
+                <tr>
+                    <th>Fecha de Salida</th>
+                    <th>Estado del Viaje</th>
+                    <th>Ubicación</th>
+                    <th>Ruta</th>
+                    <th>Vehículo</th>
+                    <th>Alumnos Asignados</th>
+                    <th>Direcciones de Alumnos</th>
+                </tr>
+                {% for viaje in historial %}
+                    <tr>
+                        <td>{{ viaje.fecha_salida }}</td>
+                        <td>{{ viaje.estado_viaje }}</td>
+                        <td>{{ viaje.direccion }}</td>
+                        <td>{{ viaje.ruta_nombre }}</td>
+                        <td>{{ viaje.vehiculo }}</td>
+                        <td>
+                            <ul>
+                                {% for alumno in viaje.alumnos %}
+                                    <li>{{ alumno.nombre }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                {% for direccion in viaje.direcciones %}
+                                    <li>{{ direccion }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No hay viajes en el historial.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

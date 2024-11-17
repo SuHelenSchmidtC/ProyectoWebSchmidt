@@ -1,0 +1,32 @@
+<!-- home_conductor.html -->
+
+<h2>Mensajes Recibidos</h2>
+{% if mensajes_recibidos %}
+    {% for mensaje in mensajes_recibidos %}
+        <p>De: {{ mensaje.remitente.username }} - {{ mensaje.contenido }} ({{ mensaje.fecha_enviado }})</p>
+    {% endfor %}
+{% else %}
+    <p>No tienes mensajes recibidos.</p>
+{% endif %}
+
+<h2>Mensajes Enviados</h2>
+{% if mensajes_enviados %}
+    {% for mensaje in mensajes_enviados %}
+        <p>Para: {{ mensaje.destinatario.username }} - {{ mensaje.contenido }} ({{ mensaje.fecha_enviado }})</p>
+    {% endfor %}
+{% else %}
+    <p>No has enviado mensajes.</p>
+{% endif %}
+
+<h2>Enviar Mensaje a un Apoderado Vinculado</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="destinatario_id">Selecciona un apoderado:</label>
+    <select name="destinatario_id" required>
+        {% for apoderado in apoderados %}
+            <option value="{{ apoderado.id }}">{{ apoderado.user.username }}</option>
+        {% endfor %}
+    </select>
+    <textarea name="contenido" placeholder="Escribe tu mensaje aquí" required></textarea>
+    <button type="submit">Enviar</button>
+</form>

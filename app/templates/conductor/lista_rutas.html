@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Rutas</title>
+</head>
+<body>
+    <h1>Mis Rutas</h1>
+    <ul>
+        {% for ruta in rutas %}
+            <li>
+                <a href="{% url 'mostrar_mapa' ruta.id %}">
+                    Ruta del {{ ruta.fecha }} - {{ ruta.hora_salida }} (Ver en mapa)
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

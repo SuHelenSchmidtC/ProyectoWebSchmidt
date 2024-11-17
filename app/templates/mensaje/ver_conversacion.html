@@ -1,0 +1,43 @@
+<!-- templates/mensaje/ver_conversacion.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Conversación</title>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>
+            Conversación con 
+            {% if conversacion.participante_1 == request.user %}
+                {{ conversacion.participante_2.nombre }} {{ conversacion.participante_2.apellido }}
+            {% else %}
+                {{ conversacion.participante_1.nombre }} {{ conversacion.participante_1.apellido }}
+            {% endif %}
+        </h2>
+        <div class="border rounded p-3 mb-3" style="height: 400px; overflow-y: scroll;">
+            {% for mensaje in mensajes %}
+                <div class="mb-2">
+                    <strong>{{ mensaje.remitente.nombre }} {{ mensaje.remitente.apellido }}:</strong> {{ mensaje.contenido }}
+                </div>
+            {% empty %}
+                <p>No hay mensajes en esta conversación.</p>
+            {% endfor %}
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <textarea name="contenido" class="form-control" required placeholder="Escribe tu mensaje aquí..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </form>
+        <a href="{% url 'ver_mensajes' %}" class="btn btn-secondary mt-3">Volver a Mensajes</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

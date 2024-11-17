@@ -1,0 +1,181 @@
+<head>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCedrHqDHfOCXIrKmE6rOojfIupDj-BKYE" async defer></script>
+</head>
+
+{% block content %}
+    <h2>Rutas Asignadas</h2>
+
+    {% for entry in rutas_asignadas %}
+        <h3>{{ entry.alumno.nombre }}</h3>
+        {% if entry.rutas %}
+            <ul>
+                {% for ruta in entry.rutas %}
+                    <li>
+                        Ruta: {{ ruta.nombre }} - Conductor: {{ ruta.conductor.nombre }} {{ ruta.conductor.apellido }}
+                        <br>
+                        Vehículo: {{ ruta.vehiculo }}
+                        <br>
+                        Hora de inicio: {{ ruta.hora_inicio }}
+
+                        <!-- Botón y contenedor de mapa -->
+                        <button id="verMapaBtn{{ ruta.id }}">Ver Mapa</button>
+                        <div id="map{{ ruta.id }}" style="display: none; height: 400px;"></div>
+
+                        <script>
+                            // WebSocket para la ubicación del vehículo
+                            var vehiculoSocket = new WebSocket("ws://" + window.location.host + "/ws/vehiculo/{{ ruta.vehiculo.id }}/");
+
+                            vehiculoSocket.onopen = function(event) {
+                                console.log("WebSocket conectado");
+                            };
+
+                            vehiculoSocket.onmessage = function(event) {
+                                var data = JSON.parse(event.data);
+                                console.log("Nueva ubicación recibida:", data);
+                                var newLatLng = new google.maps.LatLng(data.lat, data.lng);
+                                vehicleMarker.setPosition(newLatLng);
+                            };
+
+                            vehiculoSocket.onerror = function(error) {
+                                console.error("Error en WebSocket:", error);
+                            };
+
+                            vehiculoSocket.onclose = function(event) {
+                                console.log("WebSocket cerrado:", event);
+                            };
+
+                            // Función que envía la ubicación actual del vehículo al servidor
+                            function enviarUbicacion(lat, lng) {
+                                vehiculoSocket.send(JSON.stringify({
+                                    "lat": lat,
+                                    "lng": lng
+                                }));
+                            }
+
+                            // Mostrar mapa y agregar marcadores
+                            function mostrarMapa(rutaId, direcciones) {
+                                var map = new google.maps.Map(document.getElementById('map' + rutaId), {
+                                    zoom: 13,
+                                    center: { lat: -33.4489, lng: -70.6693 }
+                                });
+                                var geocoder = new google.maps.Geocoder();
+                                var markers = [];
+                                direcciones.forEach(function(direccion) {
+                                    geocoder.geocode({'address': direccion}, function(results, status) {
+                                        if (status === 'OK') {
+                                            var marker = new google.maps.Marker({
+                                                map: map,
+                                                position: results[0].geometry.location
+                                            });
+                                            markers.push(marker);
+                                            map.setCenter(results[0].geometry.location);
+                                        }
+                                    });
+                                });
+
+                                // Simulación del vehículo
+                                var vehicleMarker;
+                                var routePath = [];
+
+                                // Crear un marcador para el vehículo
+                                vehicleMarker = new google.maps.Marker({
+                                    map: map,
+                                    icon: {
+                                        url: '/static/animations/auto.png', // Ruta al ícono del vehículo
+                                        scaledSize: new google.maps.Size(50, 50),
+                                        origin: new google.maps.Point(0, 0),
+                                        anchor: new google.maps.Point(25, 25)
+                                    },
+                                    position: {lat: -33.4489, lng: -70.6693},
+                                    title: 'Vehículo en movimiento'
+                                });
+
+                                // Iniciar la simulación del vehículo
+                                var currentStep = 0;
+                                var vehicleSpeed = 0.0001;
+                                var moveVehicleInterval = setInterval(function() {
+                                    if (routePath.length && currentStep < routePath.length - 1) {
+                                        var currentLocation = vehicleMarker.getPosition();
+                                        var nextLocation = routePath[currentStep + 1];
+
+                                        var latStep = (nextLocation.lat() - currentLocation.lat()) / 100;
+                                        var lngStep = (nextLocation.lng() - currentLocation.lng()) / 100;
+
+                                        var newLat = currentLocation.lat() + latStep;
+                                        var newLng = currentLocation.lng() + lngStep;
+
+                                        vehicleMarker.setPosition(new google.maps.LatLng(newLat, newLng));
+
+                                        if (Math.abs(newLat - nextLocation.lat()) < 0.0001 && Math.abs(newLng - nextLocation.lng()) < 0.0001) {
+                                            currentStep++;
+                                        }
+                                    } else {
+                                        clearInterval(moveVehicleInterval);
+                                    }
+                                }, 50);
+
+                                // Agregar los marcadores de los alumnos
+                                var direcciones = [
+                                    {% for alumno in ruta.alumnos.all %}
+                                        "{{ alumno.direccion }}"
+                                        {% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                ];
+
+                                mostrarAlumnosEnMapa(map, direcciones);
+                            }
+
+                            function mostrarAlumnosEnMapa(map, direcciones) {
+                                var geocoder = new google.maps.Geocoder();
+                                var geocodeCount = 0;
+                                var locations = [];
+
+                                for (var i = 0; i < direcciones.length; i++) {
+                                    (function(index) {
+                                        geocoder.geocode({ 'address': direcciones[index] }, function(results, status) {
+                                            if (status === 'OK') {
+                                                var marker = new google.maps.Marker({
+                                                    map: map,
+                                                    position: results[0].geometry.location,
+                                                    title: 'Alumno: ' + direcciones[index]
+                                                });
+
+                                                locations.push(results[0].geometry.location);
+                                                geocodeCount++;
+
+                                                if (geocodeCount === direcciones.length) {
+                                                    var bounds = new google.maps.LatLngBounds();
+                                                    for (var j = 0; j < locations.length; j++) {
+                                                        bounds.extend(locations[j]);
+                                                    }
+                                                    map.fitBounds(bounds);
+                                                }
+                                            } else {
+                                                console.error('Geocoding fallido para ' + direcciones[index] + ': ' + status);
+                                            }
+                                        });
+                                    })(i);
+                                }
+                            }
+
+                            var direcciones = [
+                                {% for alumno in ruta.alumnos.all %}
+                                    "{{ alumno.direccion }}"
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            ];
+
+                            document.getElementById('verMapaBtn{{ ruta.id }}').addEventListener('click', function() {
+                                var mapaDiv = document.getElementById('map{{ ruta.id }}');
+                                mapaDiv.style.display = mapaDiv.style.display === 'none' ? 'block' : 'none';
+                                mostrarMapa({{ ruta.id }}, direcciones);
+                            });
+                        </script>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Este alumno no tiene rutas asignadas.</p>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

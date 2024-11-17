@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Conductor</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"> <!-- Íconos -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f4; /* Color de fondo más neutral */
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333; /* Texto oscuro para mayor legibilidad */
+        }
+    
+        .container {
+            width: 80%;
+            height: auto; /* Permitir que el contenedor ajuste su altura según el contenido */
+            display: flex;
+            justify-content: space-between;
+            background: #ffffff; /* Fondo blanco para un diseño limpio */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+    
+        .info-section {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+    
+        .info-section h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #007bff; /* Color azul vibrante */
+        }
+    
+        .info-section p {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #666; /* Texto gris para facilitar la lectura */
+        }
+    
+        .form-section {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    
+        .form-section form {
+            width: 80%;
+            background: #ffffff; /* Fondo blanco */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+    
+        .form-section .input-group {
+            margin-bottom: 20px;
+        }
+    
+        .form-section input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc; /* Borde gris claro */
+            outline: none;
+            font-size: 1.1em;
+        }
+    
+        .form-section .btn {
+            width: 100%;
+            padding: 10px; /* Reducir el padding para igualar tamaño */
+            font-size: 1em; /* Tamaño de fuente ajustado */
+            font-weight: bold;
+            border: none;
+            border-radius: 5px; /* Bordes redondeados más sutiles */
+            background-color: #ffcc00; /* Amarillo sólido */
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s;
+            margin-bottom: 10px;
+        }
+    
+        .form-section .btn:hover {
+            background-color: #ca3b13; /* Amarillo más oscuro al pasar el mouse */
+            transform: scale(1.05);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            color: rgba(0, 0, 0, 0.6); /* Texto gris oscuro para el pie de página */
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sección de información -->
+        <div class="info-section">
+            <h1>Registro de Conductor</h1>
+            <p>Regístrate como conductor y únete a nuestro equipo para brindar un transporte seguro y confiable a los estudiantes.</p>
+        </div>
+
+        <!-- Sección del formulario -->
+        <div class="form-section">
+            <h2>Formulario de Registro</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" name="nombre" placeholder="Nombre" class="form-control" required>
+                    {% if form.nombre.errors %}
+                        <div class="alert alert-danger">{{ form.nombre.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="input-group">
+                    <input type="text" name="apellido" placeholder="Apellido" class="form-control" required>
+                    {% if form.apellido.errors %}
+                        <div class="alert alert-danger">{{ form.apellido.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="input-group">
+                    <input type="text" name="rut" placeholder="RUT" class="form-control" required>
+                    {% if form.rut.errors %}
+                        <div class="alert alert-danger">{{ form.rut.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Email" class="form-control" required>
+                    {% if form.email.errors %}
+                        <div class="alert alert-danger">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password1" placeholder="Contraseña" class="form-control" required>
+                    {% if form.password1.errors %}
+                        <div class="alert alert-danger">{{ form.password1.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password2" placeholder="Confirmar Contraseña" class="form-control" required>
+                    {% if form.password2.errors %}
+                        <div class="alert alert-danger">{{ form.password2.errors }}</div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn">Registrar</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">&copy; 2024 Transporte Escolar - Todos los derechos reservados</footer>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<h2>Información del Vehículo</h2>
+<p>Esta es la página para la información del vehículo del conductor.</p>
+
+<!-- Formulario para mostrar los datos del vehículo y subir la revisión técnica -->
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <!-- Campo para el modelo del auto -->
+    <div>
+        <label for="modelo">Modelo del auto:</label>
+        <input type="text" id="modelo" name="modelo" value="{{ vehiculo.modelo }}" readonly>
+    </div>
+
+    <!-- Campo para la patente del auto -->
+    <div>
+        <label for="patente">Patente:</label>
+        <input type="text" id="patente" name="patente" value="{{ vehiculo.patente }}" readonly>
+    </div>
+
+    <!-- Campo para el año del auto -->
+    <div>
+        <label for="anio">Año:</label>
+        <input type="text" id="anio" name="anio" value="{{ vehiculo.anio }}" readonly>
+    </div>
+
+    <!-- Campo para subir la revisión técnica -->
+    <div>
+        <label for="revision_tecnica">Subir revisión técnica:</label>
+        <input type="file" id="revision_tecnica" name="revision_tecnica">
+    </div>
+
+    <button type="submit">Guardar</button>
+</form>

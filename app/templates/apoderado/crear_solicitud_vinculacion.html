@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleccionar Alumnos</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh; /* Altura completa de la ventana */
+            overflow: hidden; /* Evitar scroll */
+            font-family: Arial, sans-serif;
+            color: #333; /* Color de texto */
+        }
+        .animation-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .container {
+            position: relative;
+            z-index: 2; /* Mantener por encima de la animación */
+            max-width: 600px; /* Ajustar el ancho máximo */
+            margin: auto;
+            margin-top: 10%; /* Centrar verticalmente */
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.5); /* Fondo transparente */
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Sombra pronunciada */
+        }
+        h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .checkbox-option {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+            border: 2px solid black; /* Bordes negros y anchos */
+        }
+        .btn {
+            font-weight: bold; /* Letras en negrita */
+            color: black; /* Color de las letras en botones */
+            background-color: rgba(255, 255, 255, 0.7); /* Fondo transparente para botones */
+            border: none; /* Sin borde */
+            width: 100%; /* Botón ocupa todo el ancho */
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: rgba(255, 255, 255, 1); /* Fondo sólido al pasar el mouse */
+        }
+    </style>
+</head>
+<body>
+    <div class="animation-container">
+        <div id="animationContainer" style="width: 100%; height: 100%;"></div>
+    </div>
+
+    <div class="container">
+        <h2>Selecciona los Alumnos</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                {% for alumno in alumnos %}
+                    <div class="checkbox-option">
+                        <label>
+                            <input type="checkbox" name="alumnos_ids" value="{{ alumno.id }}">
+                            <span>{{ alumno.nombre }} {{ alumno.apellido }}</span>
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.6/lottie.min.js"></script>
+    <script>
+        // Cargar la animación
+        var animation = lottie.loadAnimation({
+            container: document.getElementById('animationContainer'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: '/static/animations/LoginBus.json'  // Ruta de tu animación JSON
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

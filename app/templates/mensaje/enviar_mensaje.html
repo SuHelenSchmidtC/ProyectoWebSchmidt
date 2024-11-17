@@ -1,0 +1,24 @@
+
+
+{% block content %}
+<h2>Enviar Mensaje</h2>
+
+{% if usuarios %}
+    <form method="POST">
+        {% csrf_token %}
+        <label for="destinatario_id">Seleccionar Apoderado:</label>
+        <select name="destinatario_id" required>
+            {% for usuario in usuarios %}
+                <option value="{{ usuario.id }}">{{ usuario.get_full_name }}</option> <!-- Ajusta esto si tienes un método para el nombre completo -->
+            {% endfor %}
+        </select>
+
+        <label for="contenido">Mensaje:</label>
+        <textarea name="contenido" required></textarea>
+
+        <button type="submit">Enviar Mensaje</button>
+    </form>
+{% else %}
+    <p>No hay apoderados vinculados.</p>
+{% endif %}
+{% endblock %}

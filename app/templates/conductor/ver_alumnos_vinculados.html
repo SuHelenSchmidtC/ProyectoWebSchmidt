@@ -1,0 +1,25 @@
+<div class="container mt-4">
+    <h3>Alumnos Vinculados</h3>
+    <ul class="list-group">
+        {% for alumno in alumnos_vinculados %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <strong>{{ alumno.nombre }}</strong><br>
+                <small>{{ alumno.colegio }}</small>
+                <small>{{ alumno.direccion}}</small>
+            </div>
+            <button class="btn tn-success btn-sm" onclick="agregarARuta('{{ alumno.id }}')">Agregar a Ruta</button>
+        </li>
+        {% empty %}
+        <li class="list-group-item">No hay alumnos vinculados.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+    function agregarARuta(alumnoId) {
+        // Aquí puedes implementar la lógica para agregar a la ruta.
+        alert('Alumno ' + alumnoId + ' agregado a la ruta.');
+        // También podrías realizar una solicitud AJAX o redirigir a otra página.
+    }
+</script>

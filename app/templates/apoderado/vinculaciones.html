@@ -1,0 +1,29 @@
+<!-- vinculaciones.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Solicitudes deww Vinculación</title>
+</head>
+<body>
+    <h1>Solicitudes de Vinculación Pendientes</h1>
+    {% for solicitud in solicitudes %}
+        <div>
+            <h3>Solicitud de {{ solicitud.apoderado.user.email }}</h3>
+            <p>Alumnos:</p>
+            <ul>
+                {% for alumno in solicitud.alumnos.all %}
+                    <li>{{ alumno.nombre }} {{ alumno.apellido }} - {{ alumno.rut }}</li>
+                {% endfor %}
+            </ul>
+            <form method="POST" action="{% url 'vincular_conductor' %}">
+                {% csrf_token %}
+                <input type="hidden" name="solicitud_id" value="{{ solicitud.id }}">
+                <button type="submit">Aceptar</button>
+            </form>
+        </div>
+    {% empty %}
+        <p>No hay solicitudes pendientes.</p>
+    {% endfor %}
+</body>
+</html>

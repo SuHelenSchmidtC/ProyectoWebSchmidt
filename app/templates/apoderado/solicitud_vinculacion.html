@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f0f2f5; /* Color de fondo suave */
+            font-family: 'Arial', sans-serif; /* Tipografía moderna */
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: #343a40; /* Color del texto */
+            font-weight: 600; /* Negrita */
+        }
+        .form-section {
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px; /* Limitar el ancho */
+        }
+        .btn-custom {
+            background-color: #28a745; /* Verde */
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-custom:hover {
+            background-color: #218838; /* Verde más oscuro */
+            transform: translateY(-2px);
+        }
+        h2 {
+            color: #343a40;
+            margin-bottom: 20px;
+            font-weight: 500; /* Peso de la fuente */
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #6c757d; /* Color de texto del pie */
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1></h1>
+    </header>
+
+    <main class="container">
+        <!-- Sección para agregar primero el alumno -->
+        <div class="form-section">
+            <h2>Agregar Alumno</h2>
+            <form method="POST">
+                {% csrf_token %}
+                {{ alumno_form.as_p }}
+                <button type="submit" name="agregar_alumno" class="btn btn-custom btn-block">Agregar Alumno</button>
+            </form>
+        </div>
+
+        <!-- Sección para la solicitud de vinculación -->
+        <div class="form-section">
+            <h2>Busca conductor</h2>
+            <form method="POST">
+                {% csrf_token %}
+                {{ solicitud_form.as_p }}
+                <button type="submit" name="enviar_solicitud" class="btn btn-custom btn-block">Enviar Solicitud</button>
+            </form>
+            <a href="{% url 'conductores_vinculados' %}" class="btn btn-link">Ver Conductores Vinculados</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2024</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Alumnos Registrados</h2>
+
+    {% if alumnos %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>RUT</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alumno in alumnos %}
+                    <tr>
+                        <td>{{ alumno.id }}</td>
+                        <td>{{ alumno.nombre }}</td>
+                        <td>{{ alumno.rut }}</td>
+                        <td>
+                            <a href="{% url 'editar_alumno' alumno.id %}" class="btn btn-warning btn-sm">Editar</a>
+                            <form action="{% url 'eliminar_alumno' alumno.id %}" method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay alumnos registrados.</p>
+    {% endif %}
+    <a href="{% url 'gestion_alumnos' %}" class="btn btn-primary">Agregar Alumno</a>
+</div>
+{% endblock %}

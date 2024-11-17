@@ -1,0 +1,13 @@
+<h1>Apoderados Vinculados</h1>
+
+{% if apoderados %}
+    <ul>
+    {% for apoderado in apoderados %}
+        <li>{{ apoderado.user.username }} - {{ apoderado.some_other_field }}</li>  <!-- Asegúrate de que `some_other_field` sea un campo válido de tu modelo Apoderado -->
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay apoderados vinculados.</p>
+{% endif %}
+
+<a href="{% url 'home_conductor' %}">Volver al inicio</a>

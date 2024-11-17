@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Conductores</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+   /* Estilos para el contenedor y el título */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.container h2 {
+    font-size: 28px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Estilos de la tarjeta del conductor */
+.conductor-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.conductor-card:hover {
+    transform: translateY(-5px);
+}
+
+.conductor-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.conductor-details {
+    display: flex;
+    align-items: center;
+}
+
+.conductor-details img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 15px;
+    border: 3px solid #ffcb05; /* color relacionado con transporte escolar */
+}
+
+.conductor-details h5 {
+    font-size: 20px;
+    color: #333;
+    margin: 0;
+}
+
+.conductor-details p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+/* Botón de más información */
+.btn-primary {
+    background-color: #ffcb05; /* color amarillo escolar */
+    border: none;
+    color: #333;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #e0b904;
+    color: #333;
+}
+
+.btn-primary i {
+    margin-right: 5px;
+}
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Título de la página -->
+    <h2>Conductores Disponibles</h2>
+
+    <!-- Lista de conductores -->
+    <div class="row">
+        <!-- Ejemplo de tarjeta para un conductor -->
+        {% for conductor in conductores %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="conductor-card">
+                <div class="conductor-info">
+                    <div class="conductor-details">
+                        <!-- Imagen de perfil (puedes usar el avatar o imagen del conductor si tienes) -->
+                        <img src="https://via.placeholder.com/80" alt="Conductor">
+                        <div>
+                            <h5>{{ conductor.user.nombre }}</h5>
+                            <p>{{ conductor.user.rut }}</p>
+                        </div>
+                    </div>
+                    <!-- Icono adicional para acciones, como más información o contacto -->
+                    <a href="#" class="btn btn-primary btn-sm">
+                        <i class="fas fa-info-circle"></i> Más Info
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

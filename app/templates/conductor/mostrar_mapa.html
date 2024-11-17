@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapa de la Ruta</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Mapa de la Ruta</h1>
+
+<h2>Información de la Ruta</h2>
+<p>Conductor: {{ ruta.conductor.user.get_full_name }}</p>
+<p>Origen: {{ ruta.origen }}</p>
+<p>Destino: {{ ruta.destino }}</p>
+<p>Fecha: {{ ruta.fecha }}</p>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    // Inicializa el mapa centrado en la ubicación de origen
+    var map = L.map('map').setView([{{ ruta.origen_lat }}, {{ ruta.origen_lon }}], 13);
+
+    // Capa del mapa (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
+
+    // Marcador de origen
+    var markerOrigen = L.marker([{{ ruta.origen_lat }}, {{ ruta.origen_lon }}]).addTo(map)
+        .bindPopup('Origen').openPopup();
+
+    // Marcador de destino
+    var markerDestino = L.marker([{{ ruta.destino_lat }}, {{ ruta.destino_lon }}]).addTo(map)
+        .bindPopup('Destino').openPopup();
+
+    // Dibuja una línea entre el origen y el destino
+    var latlngs = [
+        [{{ ruta.origen_lat }}, {{ ruta.origen_lon }}],
+        [{{ ruta.destino_lat }}, {{ ruta.destino_lon }}]
+    ];
+    var polyline = L.polyline(latlngs, {color: 'blue'}).addTo(map);
+
+    // Ajusta el zoom para que se vean ambos puntos
+    map.fitBounds(polyline.getBounds());
+</script>
+
+</body>
+</html>

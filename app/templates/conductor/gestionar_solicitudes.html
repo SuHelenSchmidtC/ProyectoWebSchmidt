@@ -1,0 +1,83 @@
+
+{% block title %}Gestionar Documentos{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h2 class="welcome-text">Gestionar Documentos</h2>
+</div>
+
+{% if mensaje %}
+    <div class="alert alert-success" role="alert">
+        {{ mensaje }}
+    </div>
+{% endif %}
+
+<h2>Documentos Personales</h2>
+<ul>
+    <li>
+        <i class="fas fa-id-card"></i>
+        <strong>Licencia:</strong>
+        {% if documentos_personales.licencia %}
+            <a href="{{ documentos_personales.licencia.url }}" target="_blank">Ver Documento</a>
+            <form method="POST" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="documento_id" value="{{ documentos_personales.id }}">
+                <button type="submit" name="eliminar_documento_licencia" class="btn btn-danger btn-sm">Eliminar</button>
+            </form>
+        {% else %}
+            No tienes licencia subida.
+        {% endif %}
+    </li>
+    <li>
+        <i class="fas fa-certificate"></i>
+        <strong>Certificado:</strong>
+        {% if documentos_personales.certificado %}
+            <a href="{{ documentos_personales.certificado.url }}" target="_blank">Ver Documento</a>
+            <form method="POST" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="documento_id" value="{{ documentos_personales.id }}">
+                <button type="submit" name="eliminar_documento_certificado" class="btn btn-danger btn-sm">Eliminar</button>
+            </form>
+        {% else %}
+            No tienes certificado subido.
+        {% endif %}
+    </li>
+</ul>
+
+<h2>Documentos del Vehículo</h2>
+<ul>
+    {% if vehiculo %}
+        <li>
+            <i class="fas fa-car"></i>
+            <strong>Marca:</strong> {{ vehiculo.marca }}
+        </li>
+        <li>
+            <i class="fas fa-car"></i>
+            <strong>Modelo:</strong> {{ vehiculo.modelo }}
+        </li>
+        <li>
+            <i class="fas fa-calendar-alt"></i>
+            <strong>Año:</strong> {{ vehiculo.anio }}
+        </li>
+        <li>
+            <i class="fas fa-tag"></i>
+            <strong>Patente:</strong> {{ vehiculo.patente }}
+        </li>
+        {% for documento in documentos_vehiculo %}
+            <li>
+                <i class="fas fa-file-alt"></i>
+                <strong>{{ documento.tipo_documento|capfirst }}:</strong>
+                <a href="{{ documento.archivo.url }}" target="_blank">Ver Documento</a>
+                <form method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="documento_id" value="{{ documento.id }}">
+                    <button type="submit" name="eliminar_documento_vehiculo" class="btn btn-danger btn-sm">Eliminar</button>
+                </form>
+            </li>
+        {% endfor %}
+    {% else %}
+        <li><i class="fas fa-exclamation-circle"></i>No tienes datos de vehículo registrados.</li>
+    {% endif %}
+</ul>
+
+{% endblock %}

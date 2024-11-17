@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ruta Completa del Alumno</title>
+</head>
+<body>
+    <h1>Ruta del Alumno: {{ alumno.nombre }}</h1>
+
+    <h3>Información de la Ruta</h3>
+    <p><strong>Vehículo:</strong> {{ vehiculo }}</p>
+    <p><strong>Conductor:</strong> {{ ruta.conductor }}</p>
+
+    <h3>Direcciones de los Alumnos Asignados:</h3>
+    <ul>
+        {% for direccion in direcciones %}
+            <li>{{ direccion }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

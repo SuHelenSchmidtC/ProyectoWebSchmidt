@@ -1,0 +1,77 @@
+{% block content %}
+<div class="solicitudes-container">
+    <h2>Solicitudes </h2>
+
+    <!-- Mostrar mensajes de confirmación -->
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <ul>
+        {% if solicitudes_pendientes %}
+            {% for solicitud in solicitudes_pendientes %}
+                <li>
+                    <strong>Apoderado:</strong> {{ solicitud.apoderado.user.nombre }} {{ solicitud.apoderado.user.apellido }} - 
+                    <strong>Estado:</strong> {{ solicitud.estado }}
+                    
+                    <br>
+                    <strong>Alumnos:</strong>
+                    <ul>
+                    {% for alumno in solicitud.alumnos.all %}
+                        <li>{{ alumno.nombre }} {{ alumno.apellido }} - 
+                            <strong>RUT:</strong> {{ alumno.rut }} - 
+                            <strong>Dirección:</strong> {{ alumno.direccion }} -
+                            <strong>Colegio:</strong> {{ alumno.colegio }}
+                        </li>
+                    {% endfor %}
+                    </ul>
+
+                    <!-- Formulario para aceptar/rechazar la solicitud -->
+                    <form method="post" style="display:inline;" action="{% url 'vinculaciones' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="solicitud_id" value="{{ solicitud.id }}">
+                        <button type="submit" name="accion" value="aceptar" class="btn btn-primary btn-sm">Aceptar</button>
+                        <button type="submit" name="accion" value="rechazar" class="btn btn-danger btn-sm">Rechazar</button>
+                    </form>
+                </li>
+            {% endfor %}
+        {% else %}
+            <p class="no-solicitudes">No tienes solicitudes pendientes</p>
+        {% endif %}
+    </ul>
+</div>
+
+<div class="apoderados-container">
+    <h2>Mis Apoderados</h2>
+    <ul>
+        {% if apoderados_aceptados %}
+            {% for solicitud in apoderados_aceptados %}
+                <li>
+                    <strong>Apoderado:</strong> {{ solicitud.apoderado.user.nombre }} {{ solicitud.apoderado.user.apellido }} - 
+                    <strong>Estado:</strong> {{ solicitud.estado }}
+
+                    <br>
+                    <strong>Alumnos:</strong>
+                    <ul>
+                        {% for alumno in solicitud.apoderado.alumnos.all %}
+                            <li>{{ alumno.nombre }} {{ alumno.apellido }} - 
+                                <strong>RUT:</strong> {{ alumno.rut }} - 
+                                <strong>Dirección:</strong> {{ alumno.direccion }} -
+                                <strong>Colegio:</strong> {{ alumno.colegio }}
+                            </li>
+                        {% empty %}
+                            <li>No hay alumnos vinculados a este apoderado.</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        {% else %}
+            <p class="no-solicitudes">No tienes apoderados aceptados</p>
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}

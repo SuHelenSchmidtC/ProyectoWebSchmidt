@@ -1,0 +1,18 @@
+<!-- templates/apoderado/ver_documentos_conductor.html -->
+<h1>Documentos de {{ conductor.nombre }} {{ conductor.apellido }}</h1>
+
+{% if documentos %}
+    <ul>
+        {% for documento in documentos %}
+            <li>
+                <strong>Licencia:</strong> 
+                <a href="{{ documento.licencia.url }}" target="_blank">Ver Licencia</a><br>
+                <strong>Certificado:</strong> 
+                <a href="{{ documento.certificado.url }}" target="_blank">Ver Certificado</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay documentos disponibles para este conductor.</p>
+{% endif %}
+<a href="{% url 'home_apoderado' %}">Volver a Home Apoderado</a>

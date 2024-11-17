@@ -1,0 +1,33 @@
+
+{% block content %}
+<h1>Documentos del Conductor</h1>
+
+{% if documentos %}
+    <ul>
+        {% for documento in documentos %}
+            <li>
+                <strong>Licencia:</strong>
+                {% if documento.licencia %}
+                    <a href="{{ documento.licencia.url }}" target="_blank">Ver Licencia</a>
+                {% else %}
+                    No hay licencia subida.
+                {% endif %}
+            </li>
+            <li>
+                <strong>Certificado:</strong>
+                {% if documento.certificado %}
+                    <a href="{{ documento.certificado.url }}" target="_blank">Ver Certificado</a>
+                {% else %}
+                    No hay certificado subido.
+                {% endif %}
+            </li>
+            <li><strong>Fecha de subida:</strong> {{ documento.fecha_subida }}</li>
+            <hr>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay documentos disponibles para este conductor.</p>
+{% endif %}
+
+<a href="{% url 'home_apoderado' %}">Volver a la página de inicio</a>
+{% endblock %}

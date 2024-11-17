@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio del Conductor</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+    
+        .sidebar {
+            background-color: #000000; /* Negro para el fondo de la barra lateral */
+            color: #ffffff; /* Blanco para el texto */
+            width: 220px;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 20px;
+            justify-content: space-between;
+            transform: translateX(-250px); /* Inicialmente fuera de pantalla */
+        }
+    
+        .sidebar img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+    
+        .sidebar .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+    
+        .sidebar .menu a {
+            color: #ffffff; /* Blanco para el texto de los enlaces */
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            opacity: 0;
+            padding: 10px; /* Espaciado para botones */
+            border-radius: 5px; /* Bordes redondeados para botones */
+            transition: background-color 0.3s ease; /* Transición de color */
+        }
+    
+        .sidebar .menu a:hover {
+            background-color: #ffa500; /* Naranja para el fondo en hover */
+        }
+    
+        .sidebar .menu a i {
+            margin-right: 10px;
+        }
+    
+        .content {
+            flex: 1;
+            padding: 30px;
+            background-color: #f5f5f5; /* Gris claro para el fondo del contenido */
+            transform: translateX(100vw); /* Inicialmente fuera de pantalla */
+        }
+    
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    
+        .header .welcome-text {
+            font-size: 24px;
+            color: #ff4500; /* Rojo anaranjado para el texto del encabezado */
+        }
+    
+        .map-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+    
+        .map,
+        .route-info {
+            background-color: #ffffff; /* Blanco para el fondo */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    
+        .map {
+            flex: 2;
+        }
+    
+        .route-info {
+            flex: 1;
+            margin-left: 20px;
+        }
+    
+        .route-info h5 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+    
+        .route-info .stops {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+    
+        .btn-custom {
+            display: block; /* Asegura que ocupen el mismo espacio */
+            margin: 20px auto; /* Ajusta el margen para todos los botones */
+            background-color: #32cd32; /* Verde lima para el fondo de los botones */
+            color: white; /* Color del texto */
+            width: 200px; /* Ancho fijo */
+            height: 60px; /* Altura fija */
+            border-radius: 30px; /* Bordes redondeados */
+            font-size: 18px; /* Tamaño de fuente */
+            border: none; /* Sin borde */
+            cursor: pointer; /* Cambia el cursor al pasar */
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
+        }
+    
+        .btn-custom:hover {
+            background-color: #3cb371; /* Verde mar para el fondo en hover */
+            transform: scale(1.05); /* Escala en hover para efecto visual */
+        }
+    </style>
+    
+    
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="profile">
+            <img src="https://via.placeholder.com/50" alt="Profile Picture">
+            <h4>{{ conductor.nombre }}</h4>
+        </div>
+        <div class="menu">
+            <a href="{% url 'gestionar_documentos' %}" class="menu-link">
+                <i class="bi bi-file-earmark-text-fill"></i> Informacion Personal
+            </a>
+       
+            <a href="{% url 'ver_mensajes' %}" class="menu-link">
+                <i class="bi bi-envelope-fill"></i> Ver mensajes
+            </a>
+            <a href="{% url 'enviar_mensaje' %}" class="menu-link">
+                <i class="bi bi-chat-fill"></i> Enviar mensaje
+            </a>
+            <a href="{% url 'vinculaciones' %}" class="menu-link">
+                <i class="bi bi-person-lines-fill"></i> Solicitudes
+            </a>
+
+            <a href="{% url 'ver_alumnos_vinculados' %}" class="menu-link">
+                <i class="bi bi-person-fill"></i> Mis alumnos
+            </a>
+            
+            <a href="{% url 'ver_historial_viajes' ruta.id %}" class="boton-historial">Ver Historial de Viajes</a>
+
+            <a href="{% url 'gestionar_rutas' %}">Gestionar Rutas</a>
+
+        </div>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-light w-100">Logout</button>
+        </form>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="header">
+            <h2 class="welcome-text">Hola, {{ conductor.nombre }}</h2>
+        </div>
+
+        <div class="map-container">
+            <div class="map">
+                <h5>Bus Navigation</h5>
+                <p>From: My Location</p>
+                <p>To: Lorem Street 00/00</p>
+                <img src="https://via.placeholder.com/400x300" alt="Map">
+            </div>
+            <div class="route-info">
+                <h5>Mis Rutas</h5>
+                <div class="stops">
+                    <p>Ruta 1</p>
+                    <p>25 min</p>
+                </div>
+                <div class="stops">
+                    <p>Ruta 2 </p>
+                    <p>12 min</p>
+                </div>
+                <div class="stops">
+                    <p>Ruta 3</p>
+                    <p>5 min</p>
+                </div>
+                <button class="btn-custom">Agregar Ruta</button>
+                <button class="btn-custom">Enviar Mensaje</button>
+<button class="btn-custom" onclick="window.location.href='{% url 'iniciar_viaje' ruta_id=ruta.id %}'">
+    Iniciar Viaje
+</button>
+
+                {% for ruta in rutas %}
+    <div class="stops">
+        <p>{{ ruta.nombre }}</p>
+        <p>{{ ruta.tiempo_estimado }} min</p>
+    </div>
+{% endfor %}
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- GSAP JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+
+    <script>
+        // Animación de entrada para la sidebar y el contenido
+        gsap.to('.sidebar', { x: 0, duration: 1, ease: 'power3.out' });
+        gsap.to('.content', { x: 0, duration: 1.2, delay: 0.3, ease: 'power3.out' });
+
+        // Animación para los enlaces de la barra lateral
+        gsap.to('.sidebar .menu a', { opacity: 1, delay: 0.5, stagger: 0.2, ease: 'power3.out' });
+
+        // Animación para el botón iniciar viaje
+        gsap.from('.btn-start', { scale: 0.8, duration: 0.5, ease: 'bounce.out', delay: 1 });
+
+        // Efecto de hover usando GSAP
+        document.querySelectorAll('.btn-start').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                gsap.to(button, { scale: 1.1, duration: 0.2 });
+            });
+            button.addEventListener('mouseleave', () => {
+                gsap.to(button, { scale: 1, duration: 0.2 });
+            });
+        });
+
+        // Animación para salir y redirigir a nueva página
+        document.querySelectorAll('.menu-link').forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                const targetUrl = this.getAttribute('href');
+                // Llama a la URL y carga el contenido en la parte principal
+                fetch(targetUrl)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.querySelector('.content').innerHTML = html;
+                        // Opcional: Puedes agregar una animación de entrada aquí
+                    });
+            });
+        });
+
+        function iniciarViaje() {
+            alert('Viaje iniciado');
+        }
+    </script>
+
+</body>
+
+</html>

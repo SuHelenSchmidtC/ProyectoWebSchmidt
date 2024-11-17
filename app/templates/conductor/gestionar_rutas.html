@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Rutas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .list-group-item {
+            padding: 1.5rem;
+        }
+        .alumnos-list ul {
+            padding-left: 0;
+            list-style-type: none;
+        }
+        .alumnos-list ul li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .alumnos-list form select {
+            width: 100%;
+            margin-top: 5px;
+        }
+        .main-content {
+            display: flex;
+            gap: 20px;
+        }
+        .rutas-existentes {
+            flex: 2;
+        }
+        .crear-ruta {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="mb-4 text-center">Mis Rutas</h1>
+        <div class="main-content">
+            <!-- Mostrar rutas existentes -->
+            <div class="rutas-existentes">
+                <h2 class="mb-3">Rutas Existentes</h2>
+                <div class="accordion" id="rutasAccordion">
+                    {% for ruta in rutas_con_alumnos %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading{{ ruta.ruta.id }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ ruta.ruta.id }}" aria-expanded="false" aria-controls="collapse{{ ruta.ruta.id }}">
+                                    <strong>{{ ruta.ruta.nombre }}</strong> - Vehículo: {% if ruta.vehiculo %} {{ ruta.vehiculo.marca }} {{ ruta.vehiculo.patente }} {% else %} Sin vehículo {% endif %}
+                                </button>
+                            </h2>
+                            <div id="collapse{{ ruta.ruta.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ ruta.ruta.id }}" data-bs-parent="#rutasAccordion">
+                                <div class="accordion-body">
+                                    <div>
+                                        <strong>Días de la Ruta:</strong>
+                                        {% if ruta.ruta.dias %}
+                                            <ul>
+                                                {% for dia in ruta.ruta.dias %}
+                                                    <li>{{ dia }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <p>No se han asignado días a esta ruta.</p>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="alumnos-list mt-3">
+                                        <strong>Alumnos Asignados:</strong>
+                                        <ul class="list-group">
+                                            {% for alumno in ruta.alumnos %}
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    {{ alumno.nombre }}
+                                                    <button class="btn btn-danger btn-sm" onclick="quitarAlumno({{ ruta.ruta.id }}, {{ alumno.id }})">Quitar</button>
+                                                </li>
+                                            {% empty %}
+                                                <li class="list-group-item">No hay alumnos asignados a esta ruta.</li>
+                                            {% endfor %}
+                                        </ul>
+                                        <form method="post" class="mt-3">
+                                            {% csrf_token %}
+                                            <label for="alumnos-select-{{ ruta.ruta.id }}" class="form-label">Seleccionar Alumnos:</label>
+                                            <select name="alumnos" id="alumnos-select-{{ ruta.ruta.id }}" class="form-select" multiple required>
+                                                {% for alumno in alumnos %}
+                                                    <option value="{{ alumno.id }}">{{ alumno.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <input type="hidden" name="ruta_id" value="{{ ruta.ruta.id }}">
+                                            <button type="submit" name="asignar_alumnos" class="btn btn-success btn-sm mt-2">Asignar Alumnos</button>
+                                        </form>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <button class="btn btn-info btn-sm" onclick="mostrarMapa({{ ruta.ruta.id }})">Ver Mapa</button>
+                                        <a href="{% url 'visualizar_recorrido' ruta.ruta.id %}" class="btn btn-outline-secondary btn-sm">Visualizar Recorrido</a>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="eliminarRuta({{ ruta.ruta.id }})">Eliminar Ruta</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Formulario para crear una nueva ruta -->
+            <div class="crear-ruta card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title">Crear Nueva Ruta</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" name="crear_ruta" class="btn btn-primary mt-2">Crear Ruta</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mapa -->
+        <div id="map" class="mt-5"></div>
+    </div>
+
+    <script>
+        function mostrarMapa(rutaId) {
+            // Función para mostrar el mapa (agrega el contenido necesario aquí)
+            alert('Función mostrarMapa para la ruta ' + rutaId);
+        }
+
+        function eliminarRuta(rutaId) {
+            if (confirm('¿Estás seguro de que deseas eliminar esta ruta?')) {
+                // Código de eliminación de ruta (agrega el contenido necesario aquí)
+            }
+        }
+
+        function quitarAlumno(rutaId, alumnoId) {
+            if (confirm('¿Estás seguro de que deseas quitar al alumno de esta ruta?')) {
+                $.post("{% url 'quitar_alumno' %}", {
+                    'ruta_id': rutaId,
+                    'alumno_id': alumnoId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                }, function(data) {
+                    if (data.success) {
+                        location.reload();
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

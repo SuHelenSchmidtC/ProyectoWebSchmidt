@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Apoderado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Conductores Vinculados</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Nombre Conductor</th>
+            <th>Apellido Conductor</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for conductor in conductores %}
+        <tr>
+            <td>{{ conductor.nombre }}</td>
+            <td>{{ conductor.apellido }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">No hay conductores vinculados.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>
